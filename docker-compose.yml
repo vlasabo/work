@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  tgbot:
+    build: ./bot
+    image: tgbot
+    container_name: tgbot
+    ports:
+      - "8080:8080"
