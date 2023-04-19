@@ -16,6 +16,8 @@
 	<description>work</description>
 	<modules>
 		<module>bot</module>
+        <module>internallibs</module>
+		<module>testing</module>
 	</modules>
 	<properties>
 		<java.version>17</java.version>

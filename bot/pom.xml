@@ -48,6 +48,11 @@
             <artifactId>telegrambots</artifactId>
             <version>${telegram.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.doctrine7</groupId>
+            <artifactId>internallibs</artifactId>
+            <version>1</version>
+        </dependency>
     </dependencies>
 
     <build>

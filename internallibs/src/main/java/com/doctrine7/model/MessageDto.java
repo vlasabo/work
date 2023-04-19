@@ -1,6 +1,5 @@
-package com.doctrine7.tgbot.model;
+package com.doctrine7.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@JsonSerialize
-public class Message {
+public class MessageDto {
     private List<Long> usersId;
     private String message;
 

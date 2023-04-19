@@ -1,6 +1,7 @@
 package com.doctrine7.tgbot.service;
 
 import com.doctrine7.tgbot.config.BotConfig;
+import com.doctrine7.tgbot.model.DeliveryStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,12 +44,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText() && update.getMessage().getChatId() > 0) {
             String text = update.getMessage().getText(); //команда
             long chatId = update.getMessage().getChatId();
-            try {
-                sendMessageToId(chatId, "Команда не найдена!");
-                log.error("unrecognized command " + text + " from user @" + update.getMessage().getChat().getUserName());
-            } catch (TelegramApiException e) {
-                log.error(e.getMessage());
-            }
+            sendMessageToId(chatId, "Команда не найдена!");
+            log.error("unrecognized command " + text + " from user @" + update.getMessage().getChat().getUserName());
         }
 
     }
@@ -61,16 +58,22 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    public void sendMessageToId(long chatId, String textToSend) throws TelegramApiException {
+    public DeliveryStatus sendMessageToId(long chatId, String textToSend) {
         SendMessage outputMessage = new SendMessage();
         outputMessage.setChatId(chatId);
         outputMessage.setText(textToSend);
         outputMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
         try {
             execute(outputMessage);
+            return DeliveryStatus.GOOD;
         } catch (TelegramApiException e) {
             log.error(
                     String.format("problems with sending message to chatId %s, text = %s", chatId, textToSend) + e.getMessage());
+            if (e.getMessage().contains("bot was blocked by the user")) {
+                return DeliveryStatus.BLOCKED;
+            } else {
+                return DeliveryStatus.BAD;
+            }
         }
     }
 
