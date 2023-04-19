@@ -3,7 +3,8 @@ package com.doctrine7.tgbot.service;
 import com.doctrine7.tgbot.config.BotConfig;
 import com.doctrine7.tgbot.model.DeliveryStatus;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -22,11 +23,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig config;
+    private final Logger logger = LoggerFactory.getLogger(TelegramBot.class);
 
     @Override
     public String getBotUsername() {
@@ -45,7 +46,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             String text = update.getMessage().getText(); //команда
             long chatId = update.getMessage().getChatId();
             sendMessageToId(chatId, "Команда не найдена!");
-            log.error("unrecognized command " + text + " from user @" + update.getMessage().getChat().getUserName());
+            logger.error("unrecognized command " + text + " from user @" + update.getMessage().getChat().getUserName());
         }
 
     }
@@ -54,7 +55,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), "ru"));
         } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 
@@ -67,7 +68,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(outputMessage);
             return DeliveryStatus.GOOD;
         } catch (TelegramApiException e) {
-            log.error(
+            logger.error(
                     String.format("problems with sending message to chatId %s, text = %s", chatId, textToSend) + e.getMessage());
             if (e.getMessage().contains("bot was blocked by the user")) {
                 return DeliveryStatus.BLOCKED;

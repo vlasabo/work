@@ -1,7 +1,7 @@
-package com.doctrine7.tgbot.service;
+package com.doctrine7.tgbot.service.kafka;
 
 import com.doctrine7.model.MessageDto;
-import com.doctrine7.tgbot.Producer;
+import com.doctrine7.tgbot.service.MessageProcessing;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KafkaListeners {
 
-    private final Logger logger = LoggerFactory.getLogger(Producer.class);
+    private final Logger logger = LoggerFactory.getLogger(KafkaListeners.class);
     private final MessageProcessing messageProcessing;
 
     @KafkaListener(
