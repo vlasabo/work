@@ -1,21 +1,20 @@
 package com.doctrine7.service.kafka;
 
 import com.doctrine7.config.KafkaProducerConfig;
-import com.doctrine7.model.SheduleDto;
+import com.doctrine7.model.SheduleChangeDto;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class KafkaProducer {
-    private final KafkaTemplate<String, List<SheduleDto>> kafkaTemplate;
+    private final KafkaTemplate<String, SheduleChangeDto> kafkaTemplate;
 
     public KafkaProducer(KafkaProducerConfig kafkaProducerConfig) {
         this.kafkaTemplate = kafkaProducerConfig.kafkaTemplate();
     }
 
-    public void sendMessage(String topic, String key, List<SheduleDto> sheduleDtoList) {
-        this.kafkaTemplate.send(topic, key, sheduleDtoList);
+    public void sendMessage(String topic, String key, SheduleChangeDto sheduleChangeDto) {
+        this.kafkaTemplate.send(topic, key, sheduleChangeDto);
     }
 }

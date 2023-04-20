@@ -1,6 +1,6 @@
 package com.doctrine7.config;
 
-import com.doctrine7.model.SheduleDto;
+import com.doctrine7.model.SheduleChangeDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -13,7 +13,6 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -30,12 +29,12 @@ public class KafkaProducerConfig {
         return props;
     }
     @Bean
-    public ProducerFactory<String, List<SheduleDto>> producerFactory() {
+    public ProducerFactory<String, SheduleChangeDto> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, List<SheduleDto>> kafkaTemplate() {
+    public KafkaTemplate<String, SheduleChangeDto> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

@@ -1,5 +1,7 @@
 package com.doctrine7.controller;
 
+import com.doctrine7.model.SheduleChangeDto;
+import com.doctrine7.model.StatusSheduleChanging;
 import com.doctrine7.service.SheduleService;
 import com.doctrine7.model.SheduleDto;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,25 +28,26 @@ public class SheduleChangeController {
                        @RequestParam String employee, @RequestParam String patient,
                        @RequestParam String procedure, @RequestParam String time) {
         logger.info("new request to change the schedule in the controller");
-        List<SheduleDto> sheduleList = new ArrayList<>();
-        sheduleList.add( //в [0] всегда лежит новая версия расписания
-                new SheduleDto(
-                        time,
-                        employee,
-                        patient,
-                        procedure
-                ));
+        SheduleChangeDto sheduleChangeDto = new SheduleChangeDto();
+        sheduleChangeDto.setStatus(StatusSheduleChanging.CREATE);
+        sheduleChangeDto.setNewShedule(new SheduleDto(
+                time,
+                employee,
+                patient,
+                procedure
+        ));
         if (!(lastEmployee.isBlank() & lastPatient.isBlank() & lastProcedure.isBlank() & lastTime.isBlank())) {
-            sheduleList.add( //в [1] лежит старая версия расписания если она была
+            sheduleChangeDto.setOldShedule(
                     new SheduleDto(
                             lastTime,
                             lastEmployee,
                             lastPatient,
                             lastProcedure
                     ));
-
+            sheduleChangeDto.setStatus(StatusSheduleChanging.CHANGE);
         }
-        sheduleService.writeProcedureChange(sheduleList);
+
+        sheduleService.writeProcedureChange(sheduleChangeDto);
     }
 
     @PostMapping
@@ -54,12 +55,15 @@ public class SheduleChangeController {
     public void delete(@RequestParam String employee, @RequestParam String patient,
                        @RequestParam String procedure, @RequestParam String time) {
         logger.info("new request to delete a schedule in the controller");
-        SheduleDto shedule = new SheduleDto(
+        SheduleChangeDto sheduleChangeDto = new SheduleChangeDto();
+        sheduleChangeDto.setStatus(StatusSheduleChanging.DELETE);
+        sheduleChangeDto.setOldShedule(new SheduleDto(
                 time,
                 employee,
                 patient,
                 procedure
-        );
-        sheduleService.writeProcedureDelete(List.of(shedule));
+        ));
+
+        sheduleService.writeProcedureDelete(sheduleChangeDto);
     }
 }
