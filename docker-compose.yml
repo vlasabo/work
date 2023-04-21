@@ -29,7 +29,37 @@ services:
     build: ./bot
     image: tgbot
     container_name: tgbot
+    depends_on:
+      - kafka
+  testing:
+    build: ./testing
+    image: testing
+    container_name: testing
+    depends_on:
+      - kafka
+  outsideControllers:
+    build: ./outsideControllers
+    image: outsidecontrollers
+    container_name: outsideControllers
     ports:
       - "8080:8080"
     depends_on:
       - kafka
+  db:
+    image: postgres:13.7-alpine
+    container_name: postgres
+    restart: on-failure
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=users
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+  userservice:
+    build: ./userservice
+    image: userservice
+    container_name: userservice
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/users
