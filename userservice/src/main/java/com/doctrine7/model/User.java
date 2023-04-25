@@ -34,5 +34,8 @@ public class User {
     @CollectionTable(name = "users_employees", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "employee")
     private List<String> employees;
-
+    @Column(name = "banned")
+    private boolean isBanned;
+    @Column(name = "bot_banned")
+    private boolean isBotBanned;
 }

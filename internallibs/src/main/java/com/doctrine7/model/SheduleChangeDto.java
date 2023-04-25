@@ -17,6 +17,6 @@ public class SheduleChangeDto {
 
     @Override
     public String toString() {
-        return "old shedule: " + oldShedule + "; new shedule: " + newShedule + "; status: " + status.toString();
+        return "old shedule: " + oldShedule + "new shedule: " + newShedule + "\n" + "status: " + status.toString();
     }
 }

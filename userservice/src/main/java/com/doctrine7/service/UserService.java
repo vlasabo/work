@@ -34,7 +34,7 @@ public class UserService {
         }
 
         if (sheduleChangeDto.getTelegramIdAndEmployees().size() > 0) {
-            logger.info("add new kafka message with sheduleChangeDto {} and id's: {}",
+            logger.info("add new kafka message with sheduleChangeDto \n {} and id's: {}",
                     sheduleChangeDto, sheduleChangeDto.getTelegramIdAndEmployees());
             kafkaProducer.sendMessage(sheduleChangeDto);
         }
@@ -42,7 +42,7 @@ public class UserService {
 
     private void addIdOld(SheduleChangeDto sheduleChangeDto) {
         String employee = sheduleChangeDto.getOldShedule().getEmployee();
-        List<User> usersList = userRepository.findAllByEmployeesContains(employee);
+        List<User> usersList = userRepository.findAllByEmployeesContainsAndIsBannedIsFalseAndIsBotBannedIsFalse(employee);
         setId(sheduleChangeDto, employee, usersList,
                 sheduleChangeDto.getStatus().equals(StatusSheduleChanging.DELETE) ?
                         new HashMap<>() : sheduleChangeDto.getTelegramIdAndEmployees());
@@ -50,7 +50,7 @@ public class UserService {
 
     private void addIdNew(SheduleChangeDto sheduleChangeDto) {
         String employee = sheduleChangeDto.getNewShedule().getEmployee();
-        List<User> usersList = userRepository.findAllByEmployeesContains(employee);
+        List<User> usersList = userRepository.findAllByEmployeesContainsAndIsBannedIsFalseAndIsBotBannedIsFalse(employee);
         setId(sheduleChangeDto, employee, usersList, new HashMap<>());
     }
 
