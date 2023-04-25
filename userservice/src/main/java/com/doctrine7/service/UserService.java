@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,10 +55,14 @@ public class UserService {
         setId(sheduleChangeDto, employee, usersList, new HashMap<>());
     }
 
-    private void setId(SheduleChangeDto sheduleChangeDto, String employee, List<User> usersList, Map<Long, String> telegramIdAndEmployees) {
+    private void setId(SheduleChangeDto sheduleChangeDto, String employee, List<User> usersList,
+                       Map<String, List<Long>> telegramIdAndEmployees) {
+        List<Long> usersIds = new ArrayList<>();
         for (User user : usersList) {
-            telegramIdAndEmployees.put(user.getChatId(), employee);
+            usersIds.add(user.getChatId());
         }
+        telegramIdAndEmployees.put(employee, usersIds);
+        sheduleChangeDto.setTelegramIdAndEmployees(telegramIdAndEmployees);
         sheduleChangeDto.setTelegramIdAndEmployees(telegramIdAndEmployees);
     }
 }

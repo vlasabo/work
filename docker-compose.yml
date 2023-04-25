@@ -63,3 +63,9 @@ services:
       - db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/users
+  messageprocessing:
+    build: ./messageprocessing
+    image: messageprocessing
+    container_name: messageprocessing
+    depends_on:
+      - kafka

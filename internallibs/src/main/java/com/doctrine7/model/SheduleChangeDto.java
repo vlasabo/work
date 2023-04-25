@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -13,7 +14,7 @@ public class SheduleChangeDto {
     private SheduleDto oldShedule;
     private SheduleDto newShedule;
     private StatusSheduleChanging status;
-    private Map<Long, String> telegramIdAndEmployees;
+    private Map<String, List<Long>> telegramIdAndEmployees;
 
     @Override
     public String toString() {

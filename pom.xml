@@ -20,6 +20,7 @@
 		<module>testing</module>
 		<module>outsideControllers</module>
         <module>userservice</module>
+        <module>messageprocessing</module>
     </modules>
 	<properties>
 		<java.version>17</java.version>
