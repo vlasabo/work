@@ -1,6 +1,6 @@
 package com.doctrine7.config;
 
-import com.doctrine7.model.SheduleChangeDto;
+import com.doctrine7.model.AppointmentsDocument;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -16,12 +16,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaProducerConfig {
+public class KafkaProducerConfigAppointment {
     @Value("${KAFKA_URL_INSIDE}")
     private String kafkaAddress;
 
     @Bean
-    public Map<String, Object> producerConfigs() {
+    public Map<String, Object> producerConfigs2() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaAddress);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -29,12 +29,12 @@ public class KafkaProducerConfig {
         return props;
     }
     @Bean
-    public ProducerFactory<String, SheduleChangeDto> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    public ProducerFactory<String, AppointmentsDocument> producerFactory2() {
+        return new DefaultKafkaProducerFactory<>(producerConfigs2());
     }
 
     @Bean
-    public KafkaTemplate<String, SheduleChangeDto> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, AppointmentsDocument> kafkaTemplate2() {
+        return new KafkaTemplate<>(producerFactory2());
     }
 }

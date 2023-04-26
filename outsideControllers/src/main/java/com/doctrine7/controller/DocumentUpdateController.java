@@ -1,5 +1,7 @@
 package com.doctrine7.controller;
 
+import com.doctrine7.model.AppointmentsDocument;
+import com.doctrine7.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,10 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 public class DocumentUpdateController {
+	private final DocumentService documentService;
 
 	@PostMapping
 	@RequestMapping(value = "appointment/")
-	public void change(@RequestParam String id, // номер документа
+	public void change(
+			@RequestParam String id, // номер документа
 					   @RequestParam String groupId, //номер группы телеграм для отправки сообщения
 					   @RequestParam String isNew,
 					   @RequestParam(defaultValue = "") String neurologist,
@@ -23,9 +27,11 @@ public class DocumentUpdateController {
 					   @RequestParam(defaultValue = "") String rehabilitologist,
 					   @RequestParam(defaultValue = "") String date,
 					   @RequestParam(defaultValue = "") String patient,
-					   @RequestParam(defaultValue = "") String editor) {
-//		AppointmentsList document =
-//				new AppointmentsList(id, patient, date, neurologist, speechTherapist, rehabilitologist,
-//						editor, Boolean.parseBoolean(isNew));
+					   @RequestParam(defaultValue = "") String editor
+	) {
+		AppointmentsDocument document =
+				new AppointmentsDocument(id, patient, date, neurologist, speechTherapist, rehabilitologist,
+						editor, Boolean.parseBoolean(isNew), Long.parseLong(groupId));
+		documentService.writeDocumentChange(document);
 	}
 }

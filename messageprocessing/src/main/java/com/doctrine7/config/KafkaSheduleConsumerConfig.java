@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaConsumerConfig {
+public class KafkaSheduleConsumerConfig {
 
     @Value("${KAFKA_URL_INSIDE}")
     private String kafkaAddress;
