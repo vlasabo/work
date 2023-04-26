@@ -1,5 +1,6 @@
 package com.doctrine7.tgbot.config;
 
+import com.doctrine7.model.bot.MyBotCommand;
 import com.doctrine7.tgbot.service.TelegramBot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -34,15 +36,13 @@ public class BotInitializer {
 
     private List<BotCommand> getCommandsList() {
         List<BotCommand> listOfCommands = new ArrayList<>();
-        listOfCommands.add(new BotCommand("/start", "Регистрация участника"));
-        listOfCommands.add(new BotCommand("/addreg", "Добавление сотрудника к рассылке"));
-        listOfCommands.add(new BotCommand("/delreg", "Удаление сотрудника из рассылки"));
-        listOfCommands.add(new BotCommand("/today", "Расписание на сегодня"));
-        listOfCommands.add(new BotCommand("/tomorrow", "Расписание на завтра"));
-        listOfCommands.add(new BotCommand("/thismonth", "расписание на текущий месяц"));
-        listOfCommands.add(new BotCommand("/nextmonth", "расписание на следующий месяц"));
-        listOfCommands.add(new BotCommand("/allemployees", "На кого получаю расписание"));
-        listOfCommands.add(new BotCommand("/separated", "Получать расписание раздельно/вместе"));
+
+        Arrays.stream(MyBotCommand.values())
+                .forEach(myBotCommand -> listOfCommands.add(
+                                new BotCommand(myBotCommand.getCommand(), myBotCommand.getDescription())
+                        )
+                );
+
         return listOfCommands;
     }
 
