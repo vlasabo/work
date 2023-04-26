@@ -37,7 +37,7 @@ public class MessageProcessing {
 
     private void markUserAsUnavailable(Long userId) {
         try {
-            SendResult<String, Long> result = kafkaProducer.sendMessage("blockedByUser", "key2", userId).get();
+            SendResult<String, Long> result = kafkaProducer.sendMessage("blockedByUser", "key", userId).get();
             logger.info(String.format("blocked user %s, offset %s", userId, result.getRecordMetadata().offset()));
         } catch (java.lang.InterruptedException | java.util.concurrent.ExecutionException e) {
             logger.error(e.getMessage());

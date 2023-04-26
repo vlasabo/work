@@ -17,6 +17,11 @@ public class MessageService {
     private final KafkaProducer kafkaProducer;
 
     public void prepareMessage(SheduleChangeDto sheduleChangeDto) {
+        if (sheduleChangeDto.getTelegramIdAndEmployees() == null ||
+                sheduleChangeDto.getTelegramIdAndEmployees().size() == 0) {
+            return;
+        }
+
         switch (sheduleChangeDto.getStatus()) {
             case CREATE -> {
                 SheduleDto sheduleDto = sheduleChangeDto.getNewShedule();

@@ -61,8 +61,15 @@ public class UserService {
         for (User user : usersList) {
             usersIds.add(user.getChatId());
         }
-        telegramIdAndEmployees.put(employee, usersIds);
+        if (usersIds.size() > 0) {
+            telegramIdAndEmployees.put(employee, usersIds);
+        }
         sheduleChangeDto.setTelegramIdAndEmployees(telegramIdAndEmployees);
-        sheduleChangeDto.setTelegramIdAndEmployees(telegramIdAndEmployees);
+    }
+
+    public void blockUser(Long userId) { //TODO: разбан по /start
+        User user = userRepository.findById(userId).orElseThrow();
+        user.setBotBanned(Boolean.TRUE);
+        userRepository.save(user);
     }
 }
