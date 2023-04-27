@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,7 +34,7 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "users_employees", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "employee")
-    private List<String> employees;
+    private List<String> employees = new ArrayList<>();
     @Column(name = "banned")
     private boolean isBanned;
     @Column(name = "bot_banned")

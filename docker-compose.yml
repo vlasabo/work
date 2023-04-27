@@ -5,8 +5,10 @@ services:
     container_name: zookeeper
     expose:
       - "2181"
+
   kafka:
     image: wurstmeister/kafka
+    container_name: kafka
     ports:
       - "9092:9092"
     expose:
@@ -25,18 +27,14 @@ services:
       - zookeeper
     volumes:
       - ./:/etc/kafka
+
   tgbot:
     build: ./bot
     image: tgbot
     container_name: tgbot
     depends_on:
       - kafka
-  testing:
-    build: ./testing
-    image: testing
-    container_name: testing
-    depends_on:
-      - kafka
+
   outsideControllers:
     build: ./outsideControllers
     image: outsidecontrollers
@@ -45,6 +43,7 @@ services:
       - "8080:8080"
     depends_on:
       - kafka
+
   db:
     image: postgres:13.7-alpine
     container_name: postgres
@@ -55,6 +54,7 @@ services:
       - POSTGRES_DB=users
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
+
   userservice:
     build: ./userservice
     image: userservice
@@ -63,9 +63,26 @@ services:
       - db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/users
+
   messageprocessing:
     build: ./messageprocessing
     image: messageprocessing
     container_name: messageprocessing
     depends_on:
       - kafka
+
+  inputCommandProcessing:
+    build: ./inputCommandProcessing
+    image: inputcommandprocessing
+    container_name: inputCommandProcessing
+    depends_on:
+      - kafka
+      - redis
+
+  redis:
+      image: redis:alpine
+      restart: on-failure
+      container_name: redis
+      ports:
+        - '6379:6379'
+      command: redis-server --save 20 1 --loglevel warning --requirepass pass

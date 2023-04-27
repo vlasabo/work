@@ -21,7 +21,7 @@ public class KafkaProducerConfigAppointment {
     private String kafkaAddress;
 
     @Bean
-    public Map<String, Object> producerConfigs2() {
+    public Map<String, Object> producerConfigsAppointment() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaAddress);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -29,12 +29,12 @@ public class KafkaProducerConfigAppointment {
         return props;
     }
     @Bean
-    public ProducerFactory<String, AppointmentsDocument> producerFactory2() {
-        return new DefaultKafkaProducerFactory<>(producerConfigs2());
+    public ProducerFactory<String, AppointmentsDocument> producerFactoryAppointment() {
+        return new DefaultKafkaProducerFactory<>(producerConfigsAppointment());
     }
 
     @Bean
-    public KafkaTemplate<String, AppointmentsDocument> kafkaTemplate2() {
-        return new KafkaTemplate<>(producerFactory2());
+    public KafkaTemplate<String, AppointmentsDocument> kafkaTemplateAppointment() {
+        return new KafkaTemplate<>(producerFactoryAppointment());
     }
 }

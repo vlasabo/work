@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class KafkaProducer {
+public class KafkaProducerLong {
     private final KafkaTemplate<String, Long> kafkaTemplate;
 
-    public KafkaProducer(KafkaProducerConfig kafkaProducerConfig) {
+    public KafkaProducerLong(KafkaProducerConfig kafkaProducerConfig) {
         this.kafkaTemplate = kafkaProducerConfig.kafkaTemplate();
     }
 

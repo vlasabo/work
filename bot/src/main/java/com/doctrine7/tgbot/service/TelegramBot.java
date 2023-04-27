@@ -28,6 +28,7 @@ import java.util.List;
 public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig config;
     private final Logger logger = LoggerFactory.getLogger(TelegramBot.class);
+    private final InputMessageService inputMessageService;
 
     @Override
     public String getBotUsername() {
@@ -43,10 +44,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
 
         if (update.hasMessage() && update.getMessage().hasText() && update.getMessage().getChatId() > 0) {
-            String text = update.getMessage().getText(); //команда
+            String text = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
-            sendMessageToId(chatId, "Команда не найдена!");
-            logger.error("unrecognized command " + text + " from user @" + update.getMessage().getChat().getUserName());
+            logger.info("command " + text + " from user @" + update.getMessage().getChat().getUserName());
+            inputMessageService.addNewMessage(text,chatId);
         }
 
     }

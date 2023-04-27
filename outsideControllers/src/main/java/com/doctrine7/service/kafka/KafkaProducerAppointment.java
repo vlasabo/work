@@ -11,7 +11,7 @@ public class KafkaProducerAppointment {
     private final KafkaTemplate<String, AppointmentsDocument> kafkaTemplateAppointment;
 
     public KafkaProducerAppointment(KafkaProducerConfigAppointment kafkaProducerConfigAppointment) {
-        this.kafkaTemplateAppointment = kafkaProducerConfigAppointment.kafkaTemplate2();
+        this.kafkaTemplateAppointment = kafkaProducerConfigAppointment.kafkaTemplateAppointment();
     }
 
     public void sendMessage(String topic, String key, AppointmentsDocument appointmentsDocument) {

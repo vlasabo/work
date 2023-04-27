@@ -1,6 +1,6 @@
-package com.doctrine7.tgbot.config;
+package com.doctrine7.config;
 
-import com.doctrine7.model.OutputMessageDto;
+import com.doctrine7.model.bot.InputMessageDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,14 +38,14 @@ public class KafkaConsumerConfig {
 
     @Bean
     public KafkaListenerContainerFactory<?> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, OutputMessageDto> factory =
+        ConcurrentKafkaListenerContainerFactory<String, InputMessageDto> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<String, OutputMessageDto> consumerFactory() {
+    public ConsumerFactory<String, InputMessageDto> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs());
     }
 }

@@ -1,7 +1,7 @@
 package com.doctrine7.service;
 
 import com.doctrine7.model.AppointmentsDocument;
-import com.doctrine7.model.MessageDto;
+import com.doctrine7.model.OutputMessageDto;
 import com.doctrine7.service.kafka.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,9 +61,9 @@ public class AppointmentsListService {
     }
 
     private void sendMessage(long groupId, StringBuilder messageText) {
-        MessageDto messageDto = new MessageDto();
-        messageDto.setMessage(messageText.toString());
-        messageDto.setUsersId(List.of(groupId));
-        kafkaProducer.sendMessage(messageDto);
+        OutputMessageDto outputMessageDto = new OutputMessageDto();
+        outputMessageDto.setMessage(messageText.toString());
+        outputMessageDto.setUsersId(List.of(groupId));
+        kafkaProducer.sendMessage(outputMessageDto);
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class MessageDto {
+public class OutputMessageDto {
     private List<Long> usersId;
     private String message;
 
