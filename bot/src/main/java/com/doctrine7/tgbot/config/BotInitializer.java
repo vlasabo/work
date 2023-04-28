@@ -38,6 +38,7 @@ public class BotInitializer {
         List<BotCommand> listOfCommands = new ArrayList<>();
 
         Arrays.stream(MyBotCommand.values())
+                .filter(myBotCommand -> !myBotCommand.getCommand().isBlank())
                 .forEach(myBotCommand -> listOfCommands.add(
                                 new BotCommand(myBotCommand.getCommand(), myBotCommand.getDescription())
                         )

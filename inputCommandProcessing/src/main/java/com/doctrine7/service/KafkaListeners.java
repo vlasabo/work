@@ -1,7 +1,6 @@
 package com.doctrine7.service;
 
 import com.doctrine7.model.bot.InputMessageDto;
-import com.doctrine7.model.bot.MyBotStatus;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
@@ -30,10 +29,9 @@ public class KafkaListeners {
             final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
             final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts
     ) {
-        System.out.println("test!!!!!!!!!!!!!!!!!");
         logger.info((String.format("#### -> Consumed message -> TIMESTAMP: %d\n%s\noffset: %d\nkey: %s\npartition: %d\ntopic: %s",
                 ts, record.value().toString(), offset, key, partition, topic)));
-        //inputMessageService.test(new UserBotStatus(record.value().getChatId(), MyBotStatus.STANDARD));
+        inputMessageService.processCommand(record.value());
     }
 }
 
