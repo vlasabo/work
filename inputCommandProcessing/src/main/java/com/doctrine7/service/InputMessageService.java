@@ -1,16 +1,20 @@
 package com.doctrine7.service;
 
+import com.doctrine7.model.OutputMessageDto;
 import com.doctrine7.model.UserBotStatus;
 import com.doctrine7.model.bot.InputMessageDto;
 import com.doctrine7.model.bot.MyBotCommand;
 import com.doctrine7.model.bot.MyBotStatus;
 import com.doctrine7.repository.UserStatusRepository;
+import com.doctrine7.service.kafka.KafkaProducerInputMessage;
+import com.doctrine7.service.kafka.KafkaProducerOutputMessage;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -19,6 +23,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class InputMessageService {
     private final UserStatusRepository userStatusRepository;
+    private final KafkaProducerOutputMessage kafkaProducerOutputMessage;
+    private final KafkaProducerInputMessage kafkaProducerInputMessage;
     private final Logger logger = LoggerFactory.getLogger(InputMessageService.class);
     private final Map<String, MyBotCommand> commands = Arrays.stream(MyBotCommand.values())
             .collect(Collectors.toMap(
@@ -30,9 +36,13 @@ public class InputMessageService {
                 (message.getUserBlocked() == null || message.getUserExists() == null)) {
             logger.info("input message {} has no fields with the user status and is sent for processing in userservice",
                     message);
-            //todo: отправить в юзерсервис, там же заполнить employees
+            kafkaProducerInputMessage.sendMessage("filling", "key", message);
         } else if (message.getUserBlocked() == Boolean.TRUE) {
-            //todo: отправить сообщение что человек заблокирован
+            OutputMessageDto blockedMessage = new OutputMessageDto(
+                    List.of(message.getChatId()),
+                    "Вы заблокированы и не можете больше пользоваться ботом"
+            );
+            kafkaProducerOutputMessage.sendMessage("msg", "key", blockedMessage);
         } else {
             parseCommand(message);
         }
@@ -52,7 +62,13 @@ public class InputMessageService {
                         userStatusRepository.save(new UserBotStatus(message.getChatId(), MyBotStatus.STANDARD));
                         //todo: отправить в юзерсервис
                     }
-                    case UNRECOGNIZED -> System.out.println(); //todo: отправить сообщение что команда не распознана
+                    case UNRECOGNIZED -> {
+                        OutputMessageDto outputMessageDto = new OutputMessageDto(
+                                List.of(message.getChatId()),
+                                "unrecognized command " + message.getRawInputCommand()
+                        );
+                        kafkaProducerOutputMessage.sendMessage("msg", "key", outputMessageDto);
+                    }
                     case TODAY -> System.out.println(1); //todo: запрос расписания
                     case TOMORROW -> System.out.println(2); //todo: запрос расписания
                     case THIS_MONTH -> System.out.println(3); //todo: отправка клавиатуры

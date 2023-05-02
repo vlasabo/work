@@ -1,5 +1,6 @@
 package com.doctrine7.config;
 
+import com.doctrine7.model.OutputMessageDto;
 import com.doctrine7.model.bot.InputMessageDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -29,13 +30,22 @@ public class KafkaProducerConfig {
         return props;
     }
     @Bean
-    public ProducerFactory<String, InputMessageDto> producerFactory() {
+    public ProducerFactory<String, OutputMessageDto> producerFactoryOutputMessage() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, InputMessageDto> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, OutputMessageDto> kafkaTemplateOutputMessage() {
+        return new KafkaTemplate<>(producerFactoryOutputMessage());
     }
 
+    @Bean
+    public ProducerFactory<String, InputMessageDto> producerFactoryInputMessage() {
+        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+
+    @Bean
+    public KafkaTemplate<String, InputMessageDto> kafkaTemplateInputMessage() {
+        return new KafkaTemplate<>(producerFactoryInputMessage());
+    }
 }

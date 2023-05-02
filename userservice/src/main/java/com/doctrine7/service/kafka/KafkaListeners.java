@@ -1,6 +1,8 @@
 package com.doctrine7.service.kafka;
 
 import com.doctrine7.model.SheduleChangeDto;
+import com.doctrine7.model.bot.InputMessageDto;
+import com.doctrine7.service.InputMessageService;
 import com.doctrine7.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -18,6 +20,7 @@ public class KafkaListeners {
 
     private final Logger logger = LoggerFactory.getLogger(KafkaListeners.class);
     private final UserService userService;
+    private final InputMessageService inputMessageService;
 
     @KafkaListener(
             topics = {"shedulechange",
@@ -48,6 +51,21 @@ public class KafkaListeners {
         logger.info((String.format("#### -> Consumed message -> TIMESTAMP: %d\n%s\noffset: %d\nkey: %s\npartition: %d\ntopic: %s",
                 ts, record.value().toString(), offset, key, partition, topic)));
         userService.blockUser(record.value());
+    }
+
+    @KafkaListener(
+            topics = {"filling"},
+            groupId = "groupId")
+    public void fillingInputMessageDto(final ConsumerRecord<String, InputMessageDto> record,
+                              final @Header(KafkaHeaders.OFFSET) Integer offset,
+                              final @Header(KafkaHeaders.RECEIVED_KEY) String key,
+                              final @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+                              final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                              final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts
+    ) {
+        logger.info((String.format("#### -> Consumed message -> TIMESTAMP: %d\n%s\noffset: %d\nkey: %s\npartition: %d\ntopic: %s",
+                ts, record.value().toString(), offset, key, partition, topic)));
+        inputMessageService.fill(record.value());
     }
 }
 

@@ -1,6 +1,7 @@
-package com.doctrine7.service;
+package com.doctrine7.service.kafka;
 
 import com.doctrine7.model.bot.InputMessageDto;
+import com.doctrine7.service.InputMessageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
