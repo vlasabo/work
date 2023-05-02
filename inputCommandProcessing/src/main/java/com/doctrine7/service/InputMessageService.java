@@ -38,11 +38,7 @@ public class InputMessageService {
                     message);
             kafkaProducerInputMessage.sendMessage("filling", "key", message);
         } else if (message.getUserBlocked() == Boolean.TRUE) {
-            OutputMessageDto blockedMessage = new OutputMessageDto(
-                    List.of(message.getChatId()),
-                    "Вы заблокированы и не можете больше пользоваться ботом"
-            );
-            kafkaProducerOutputMessage.sendMessage("msg", "key", blockedMessage);
+            sendOutputMessage(message.getChatId(), "Вы заблокированы и не можете пользоваться ботом");
         } else {
             parseCommand(message);
         }
@@ -60,14 +56,18 @@ public class InputMessageService {
                 switch (command) {
                     case START -> {
                         userStatusRepository.save(new UserBotStatus(message.getChatId(), MyBotStatus.STANDARD));
-                        //todo: отправить в юзерсервис
+                        message.setBotCommand(MyBotCommand.START);
+                        kafkaProducerInputMessage.sendMessage("startCommand", "key", message);
+                        sendOutputMessage(message.getChatId(),
+                                """
+                                        Вы успешно запустили бота.
+                                        Для добавления отслеживаемых сотрудников воспользуйтесь командой /addreg
+                                        Для просмотра расписания - /today или /tomorrow
+                                        Больше команд в меню бота""");
                     }
                     case UNRECOGNIZED -> {
-                        OutputMessageDto outputMessageDto = new OutputMessageDto(
-                                List.of(message.getChatId()),
-                                "unrecognized command " + message.getRawInputCommand()
-                        );
-                        kafkaProducerOutputMessage.sendMessage("msg", "key", outputMessageDto);
+                        logger.info("unrecognized command " + message.getRawInputCommand());
+                        sendOutputMessage(message.getChatId(), "Неизвестная команда " + message.getRawInputCommand());
                     }
                     case TODAY -> System.out.println(1); //todo: запрос расписания
                     case TOMORROW -> System.out.println(2); //todo: запрос расписания
@@ -90,5 +90,12 @@ public class InputMessageService {
                 System.out.println(10); //todo: вывести список, сменить статус
             }
         }
+    }
+
+    private void sendOutputMessage(Long chatId, String text) {
+        kafkaProducerOutputMessage.sendMessage("msg", "key", new OutputMessageDto(
+                List.of(chatId),
+                text
+        ));
     }
 }

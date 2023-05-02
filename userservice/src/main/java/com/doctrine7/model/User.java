@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Getter
@@ -39,4 +40,26 @@ public class User {
     private boolean isBanned;
     @Column(name = "bot_banned")
     private boolean isBotBanned;
+
+    @Override
+    public int hashCode() {
+        return this.chatId.intValue();
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj == this){
+            return true;
+        }
+
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        final User other = (User) obj;
+        return Objects.equals(this.chatId, other.chatId);
+    }
 }

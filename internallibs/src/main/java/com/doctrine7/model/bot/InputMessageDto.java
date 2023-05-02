@@ -5,8 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +22,8 @@ public class InputMessageDto {
     private List<String> employees = new ArrayList<>();
     private Boolean UserBlocked;
     private Boolean UserExists;
+    private Map<String, String> userCredentials = new HashMap<>();
+    private LocalDateTime messageTime;
 
     @Override
     public String toString() {
