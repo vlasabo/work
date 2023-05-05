@@ -39,4 +39,10 @@ public class InputMessageService {
 
         userService.save(user);
     }
+
+    public void setSeparated(InputMessageDto inputMessageDto) {
+        User user = userService.findById(inputMessageDto.getChatId()).orElseThrow();
+        user.setSeparatedShedule(!user.getSeparatedShedule());
+        userService.save(user);
+    }
 }

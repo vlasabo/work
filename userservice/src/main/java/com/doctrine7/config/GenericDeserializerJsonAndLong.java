@@ -13,7 +13,7 @@ public class GenericDeserializerJsonAndLong extends JsonDeserializer<Object> {
     public Object deserialize(String topic, Headers headers, byte[] data)
     {
         switch (topic) {
-            case "shedulechange", "sheduledelete", "filling", "startCommand" -> {
+            case "shedulechange", "sheduledelete", "filling", "startCommand", "setSeparatedCommand" -> {
                 try (JsonDeserializer<SheduleChangeDto> topicOneDeserializer = new JsonDeserializer<>()) {
                     topicOneDeserializer.addTrustedPackages("*");
                     return topicOneDeserializer.deserialize(topic, headers, data);

@@ -75,7 +75,7 @@ public class InputMessageService {
                     case NEXT_MONTH -> System.out.println(4); //todo: отправка клавиатуры
                     case ADD_REG -> System.out.println(5); //todo: сменить статус
                     case DEL_REG -> System.out.println(6); //todo: сменить статус
-                    case SEPARATED -> System.out.println(7); //todo: в юзерсервис
+                    case SEPARATED -> kafkaProducerInputMessage.sendMessage("setSeparatedCommand", "key", message);
                     case ALL_EMPLOYEE -> System.out.println(8); //todo: в юзерсервис
                     default ->
                             throw new IllegalArgumentException("unrecognized command " + message.getRawInputCommand());
