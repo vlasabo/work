@@ -4,7 +4,7 @@ import com.doctrine7.model.SheduleChangeDto;
 import com.doctrine7.model.StatusSheduleChanging;
 import com.doctrine7.model.User;
 import com.doctrine7.repository.UserRepository;
-import com.doctrine7.service.kafka.KafkaProducer;
+import com.doctrine7.service.kafka.KafkaProducerSheduleDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import java.util.*;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final KafkaProducer kafkaProducer;
+    private final KafkaProducerSheduleDto kafkaProducerSheduleDto;
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public void setEmployees(SheduleChangeDto sheduleChangeDto) {
@@ -34,7 +34,7 @@ public class UserService {
         if (sheduleChangeDto.getTelegramIdAndEmployees().size() > 0) {
             logger.info("add new kafka message with sheduleChangeDto \n {} and id's: {}",
                     sheduleChangeDto, sheduleChangeDto.getTelegramIdAndEmployees());
-            kafkaProducer.sendMessage(sheduleChangeDto);
+            kafkaProducerSheduleDto.sendMessage(sheduleChangeDto);
         }
     }
 

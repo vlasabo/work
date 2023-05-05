@@ -1,5 +1,6 @@
 package com.doctrine7.config;
 
+import com.doctrine7.model.OutputMessageDto;
 import com.doctrine7.model.SheduleChangeDto;
 import com.doctrine7.model.bot.InputMessageDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -47,5 +48,15 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, InputMessageDto> kafkaTemplateInputMessage() {
         return new KafkaTemplate<>(producerFactoryInputMessage());
+    }
+
+    @Bean
+    public ProducerFactory<String, OutputMessageDto> producerFactoryOutputMessage() {
+        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+
+    @Bean
+    public KafkaTemplate<String, OutputMessageDto> kafkaTemplateOutputMessage() {
+        return new KafkaTemplate<>(producerFactoryOutputMessage());
     }
 }

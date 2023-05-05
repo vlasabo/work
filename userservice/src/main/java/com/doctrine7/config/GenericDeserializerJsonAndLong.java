@@ -10,10 +10,10 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 public class GenericDeserializerJsonAndLong extends JsonDeserializer<Object> {
 
     @Override
-    public Object deserialize(String topic, Headers headers, byte[] data)
-    {
+    public Object deserialize(String topic, Headers headers, byte[] data) {
         switch (topic) {
-            case "shedulechange", "sheduledelete", "filling", "startCommand", "setSeparatedCommand" -> {
+            case "shedulechange", "sheduledelete", "filling",
+                    "startCommand", "setSeparatedCommand", "allEmployeesCommand" -> {
                 try (JsonDeserializer<SheduleChangeDto> topicOneDeserializer = new JsonDeserializer<>()) {
                     topicOneDeserializer.addTrustedPackages("*");
                     return topicOneDeserializer.deserialize(topic, headers, data);

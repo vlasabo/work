@@ -8,14 +8,14 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class KafkaProducer {
+public class KafkaProducerSheduleDto {
     private final KafkaTemplate<String, SheduleChangeDto> kafkaTemplate;
     @Value("${ADD_ID}")
     private String addId;
     @Value("${KAFKA_KEY_SHEDULE}")
     private String key;
 
-    public KafkaProducer(KafkaProducerConfig kafkaProducerConfig) {
+    public KafkaProducerSheduleDto(KafkaProducerConfig kafkaProducerConfig) {
         this.kafkaTemplate = kafkaProducerConfig.kafkaTemplate();
     }
 
