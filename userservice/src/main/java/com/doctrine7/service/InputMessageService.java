@@ -40,8 +40,11 @@ public class InputMessageService {
             user = userOpt.get();
             user.setBotBanned(false);
         }
-
         userService.save(user);
+        sendOutputMessage(inputMessageDto.getChatId(),
+                """
+                        Вы успешно запустили бота.
+                        Получить доступ к функционалу можно после ввода пароля по команде /reg""");
     }
 
     public void setSeparated(InputMessageDto inputMessageDto) {
@@ -64,10 +67,36 @@ public class InputMessageService {
                 "Вы еще не добавили сотрудников" : text.toString());
     }
 
+    public void setAuthenticated(Long chatId) {
+        User user = userService.findById(chatId).orElseThrow();
+        user.setAuthenticated(true);
+        user.setRegistrationAttempts(0);
+        userService.save(user);
+        sendOutputMessage(chatId, """
+                Вы верно ввели пароль и можете пользоваться полным функционалом.
+                Для добавления отслеживаемых сотрудников воспользуйтесь командой /addemp
+                Для просмотра расписания - /today или /tomorrow
+                Больше команд в меню бота""");
+    }
+
+    public void addRegistrationAttempts(Long chatId) {
+        User user = userService.findById(chatId).orElseThrow();
+        int attempts = user.getRegistrationAttempts();
+        user.setRegistrationAttempts(++attempts);
+        sendOutputMessage(chatId, String.format("Неверный пароль, у вас осталось %s попыток", 10 - attempts));
+        if (attempts >= 10) {
+            user.setBanned(true);
+            sendOutputMessage(chatId, "Вы заблокированы");
+        }
+        userService.save(user);
+
+    }
+
     private void sendOutputMessage(Long chatId, String text) {
         OutputMessageDto outputMessageDto = new OutputMessageDto();
         outputMessageDto.setUsersId(List.of(chatId));
         outputMessageDto.setMessage(text);
         kafkaProducerOutputMessage.sendMessage("msg", "key", outputMessageDto);
     }
+
 }

@@ -112,5 +112,35 @@ public class KafkaListeners {
                 ts, record.value().toString(), offset, key, partition, topic)));
         inputMessageService.allEmployees(record.value());
     }
+
+    @KafkaListener(
+            topics = {"authenticated"},
+            groupId = "groupId")
+    public void setAuthenticated(final ConsumerRecord<String, InputMessageDto> record,
+                                 final @Header(KafkaHeaders.OFFSET) Integer offset,
+                                 final @Header(KafkaHeaders.RECEIVED_KEY) String key,
+                                 final @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+                                 final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                                 final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts
+    ) {
+        logger.info((String.format("#### -> Consumed message -> TIMESTAMP: %d\n%s\noffset: %d\nkey: %s\npartition: %d\ntopic: %s",
+                ts, record.value().toString(), offset, key, partition, topic)));
+        inputMessageService.setAuthenticated(record.value().getChatId());
+    }
+
+    @KafkaListener(
+            topics = {"failAuthenticate"},
+            groupId = "groupId")
+    public void failAuthenticate(final ConsumerRecord<String, InputMessageDto> record,
+                                 final @Header(KafkaHeaders.OFFSET) Integer offset,
+                                 final @Header(KafkaHeaders.RECEIVED_KEY) String key,
+                                 final @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+                                 final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                                 final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts
+    ) {
+        logger.info((String.format("#### -> Consumed message -> TIMESTAMP: %d\n%s\noffset: %d\nkey: %s\npartition: %d\ntopic: %s",
+                ts, record.value().toString(), offset, key, partition, topic)));
+        inputMessageService.addRegistrationAttempts(record.value().getChatId());
+    }
 }
 

@@ -32,6 +32,9 @@ public class InputMessageService {
             ));
 
     public void processCommand(InputMessageDto message) {
+        if (Objects.equals(message.getRawInputCommand(), "/start")) {
+            userStatusRepository.save(new UserBotStatus(message.getChatId(), MyBotStatus.STANDARD));
+        }
         if (!Objects.equals(message.getRawInputCommand(), "/start") &&
                 (message.getUserBlocked() == null || message.getUserExists() == null)) {
             logger.info("input message {} has no fields with the user status and is sent for processing in userservice",
@@ -50,31 +53,32 @@ public class InputMessageService {
         message.setBotCommand(command);
         UserBotStatus userStatus = userStatusRepository.findById(message.getChatId())
                 .orElse(new UserBotStatus(message.getChatId(), MyBotStatus.STANDARD));
+        System.out.println(userStatus.getUserStatus());
         switch (userStatus.getUserStatus()) {
             case STANDARD -> {
 
                 switch (command) {
                     case START -> {
-                        userStatusRepository.save(new UserBotStatus(message.getChatId(), MyBotStatus.STANDARD));
                         message.setBotCommand(MyBotCommand.START);
                         kafkaProducerInputMessage.sendMessage("startCommand", "key", message);
-                        sendOutputMessage(message.getChatId(),
-                                """
-                                        Вы успешно запустили бота.
-                                        Для добавления отслеживаемых сотрудников воспользуйтесь командой /addreg
-                                        Для просмотра расписания - /today или /tomorrow
-                                        Больше команд в меню бота""");
                     }
                     case UNRECOGNIZED -> {
                         logger.info("unrecognized command " + message.getRawInputCommand());
                         sendOutputMessage(message.getChatId(), "Неизвестная команда " + message.getRawInputCommand());
                     }
+                    case REG -> {
+                        userStatusRepository.save(new UserBotStatus(message.getChatId(), MyBotStatus.REGISTRATION));
+                        message.setBotCommand(MyBotCommand.REG);
+                        sendOutputMessage(message.getChatId(), """
+                                Вы вошли в режим ввода пароля для доступа к данным расписания.
+                                Пожалуйста, напишите следующим сообщением пароль или /start для выхода в обычное меню""");
+                    }
                     case TODAY -> System.out.println(1); //todo: запрос расписания
                     case TOMORROW -> System.out.println(2); //todo: запрос расписания
                     case THIS_MONTH -> System.out.println(3); //todo: отправка клавиатуры
                     case NEXT_MONTH -> System.out.println(4); //todo: отправка клавиатуры
-                    case ADD_REG -> System.out.println(5); //todo: сменить статус
-                    case DEL_REG -> System.out.println(6); //todo: сменить статус
+                    case ADD_EMP -> System.out.println(5); //todo: сменить статус
+                    case DEL_EMP -> System.out.println(6); //todo: сменить статус
                     case SEPARATED -> kafkaProducerInputMessage.sendMessage("setSeparatedCommand", "key", message);
                     case ALL_EMPLOYEE -> kafkaProducerInputMessage.sendMessage("allEmployeesCommand", "key", message);
                     default ->
@@ -83,7 +87,12 @@ public class InputMessageService {
             }
 
             case REGISTRATION -> {
-                System.out.println(9); //todo: проверка пароля, потом в юзерсервис, потом сменить статус
+                if (Objects.equals(message.getRawInputCommand(), PasswordChecker.getActualPassword())) {
+                    kafkaProducerInputMessage.sendMessage("authenticated", "key", message);
+                    userStatusRepository.save(new UserBotStatus(message.getChatId(), MyBotStatus.STANDARD));
+                } else {
+                    kafkaProducerInputMessage.sendMessage("failAuthenticate", "key", message);
+                }
             }
 
             case DELETING_EMPLOYEE -> {

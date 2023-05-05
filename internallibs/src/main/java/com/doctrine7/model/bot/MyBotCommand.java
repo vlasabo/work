@@ -7,9 +7,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum MyBotCommand {
 
-    START("/start", "Регистрация участника"),
-    ADD_REG("/addreg", "Добавление сотрудника к рассылке"),
-    DEL_REG("/delreg", "Удаление сотрудника из рассылки"),
+    START("/start", "Запуск бота"),
+    REG("/reg", "Регистрация участника"),
+    ADD_EMP("/addemp", "Добавление сотрудника к рассылке"),
+    DEL_EMP("/delemp", "Удаление сотрудника из рассылки"),
     TODAY("/today", "Расписание на сегодня"),
     TOMORROW("/tomorrow", "Расписание на завтра"),
     THIS_MONTH("/thismonth", "расписание на текущий месяц"),

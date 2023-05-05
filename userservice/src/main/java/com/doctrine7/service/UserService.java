@@ -40,7 +40,7 @@ public class UserService {
 
     private void addIdOld(SheduleChangeDto sheduleChangeDto) {
         String employee = sheduleChangeDto.getOldShedule().getEmployee();
-        List<User> usersList = userRepository.findAllByEmployeesContainsAndIsBannedIsFalseAndIsBotBannedIsFalse(employee);
+        List<User> usersList = userRepository.findAllByEmployeesContainsAndBannedIsFalseAndBotBannedIsFalse(employee);
         setId(sheduleChangeDto, employee, usersList,
                 sheduleChangeDto.getStatus().equals(StatusSheduleChanging.DELETE) ?
                         new HashMap<>() : sheduleChangeDto.getTelegramIdAndEmployees());
@@ -48,7 +48,7 @@ public class UserService {
 
     private void addIdNew(SheduleChangeDto sheduleChangeDto) {
         String employee = sheduleChangeDto.getNewShedule().getEmployee();
-        List<User> usersList = userRepository.findAllByEmployeesContainsAndIsBannedIsFalseAndIsBotBannedIsFalse(employee);
+        List<User> usersList = userRepository.findAllByEmployeesContainsAndBannedIsFalseAndBotBannedIsFalse(employee);
         setId(sheduleChangeDto, employee, usersList, new HashMap<>());
     }
 
@@ -64,9 +64,9 @@ public class UserService {
         sheduleChangeDto.setTelegramIdAndEmployees(telegramIdAndEmployees);
     }
 
-    public void blockUser(Long userId) { //TODO: разбан по /start
+    public void blockUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow();
-        user.setBotBanned(Boolean.TRUE);
+        user.setBotBanned(true);
         userRepository.save(user);
     }
 

@@ -37,14 +37,17 @@ public class User {
     @Column(name = "employee")
     private List<String> employees = new ArrayList<>();
     @Column(name = "banned")
-    private boolean isBanned;
+    private boolean banned;
     @Column(name = "bot_banned")
-    private boolean isBotBanned;
+    private boolean botBanned;
+    @Column(name = "authenticated")
+    private boolean authenticated;
 
     @Override
     public int hashCode() {
         return this.chatId.intValue();
     }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
